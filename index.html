@@ -1,0 +1,1824 @@
+<html><head><base href="website">
+<title>TRXY's Bible of Ethical Hacking</title>
+<style>
+  body {
+    background-color: #1a1a1a; /* Dark background */
+    color: #00ff9d; /* Change main text color to a softer green */
+    font-family: 'Courier New', monospace;
+    margin: 0;
+    padding: 0;
+    display: flex;
+  }
+  
+  .sidebar {
+    width: 250px;
+    background-color: #212121; /* Darker sidebar */
+    height: 100vh;
+    position: fixed;
+    border-right: 2px solid #ff4d4d; /* Red accent border */
+    overflow-y: auto;
+    transform: translateX(-250px); /* Start hidden */
+    transition: transform 0.3s ease; /* Add transition */
+  }
+
+  .sidebar.active {
+    transform: translateX(0); /* Show when active */
+  }
+
+  .sidebar-nav {
+    padding: 20px 0;
+  }
+
+  .sidebar-nav button {
+    display: block;
+    width: 100%;
+    padding: 15px 20px;
+    background: none;
+    border: none;
+    color: #00ff9d; /* Change sidebar button text to green */
+    text-align: left;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    transition: all 0.3s;
+    border-left: 4px solid transparent;
+  }
+
+  .sidebar-nav button:hover,
+  .sidebar-nav button.active {
+    background-color: #2a2a2a;
+    border-left: 4px solid #ff4d4d; /* Red accent */
+    color: #00ffa3; /* Lighter green on hover */
+  }
+
+  .main-content {
+    margin-left: 0; /* Start with no margin */
+    flex: 1;
+    transition: margin-left 0.3s ease; /* Adjust main content transition */
+  }
+
+  .main-content.shifted {
+    margin-left: 250px; /* Add margin when sidebar is open */
+  }
+  
+  .matrix-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.1;
+    z-index: -1;
+  }
+  
+  .header {
+    background-color: #212121;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 2px solid #ff4d4d; /* Red accent border */
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .tool-category {
+    background-color: #212121;
+    border: 1px solid #ff4d4d; /* Red accent border */
+    border-radius: 5px;
+    margin: 20px 0;
+    padding: 20px;
+    transition: transform 0.3s;
+    display: none;
+  }
+  
+  .tool-category.active {
+    display: block;
+    animation: fadeIn 0.5s;
+  }
+  
+  .tool {
+    margin: 10px 0;
+    padding: 10px;
+    border-left: 3px solid #ff4d4d; /* Red accent border */
+  }
+  
+  .tool h3 {
+    margin: 0;
+    color: #00ff9d; /* Keep existing green color */
+    font-weight: 900; /* Make tool names extra bold */
+    font-size: 1.3em; /* Slightly larger */
+    letter-spacing: 0.5px; /* Improve readability */
+    text-transform: uppercase; /* Make names uppercase for emphasis */
+  }
+  
+  .tool p {
+    color: #00cc7a; /* Slightly darker green for better readability */
+  }
+
+  .tool a {
+    color: #00ff9d; /* Change link text to green */
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 10px;
+    border: 1px solid #ff4d4d; /* Red accent border */
+    padding: 5px 10px;
+    border-radius: 3px;
+    transition: all 0.3s;
+  }
+
+  .tool a:hover {
+    background-color: #ff4d4d; /* Red accent background on hover */
+    color: #212121;
+  }
+
+  .home-content {
+    text-align: center;
+    padding: 40px;
+  }
+
+  .welcome-text {
+    font-size: 1.2em;
+    line-height: 1.6;
+    margin-bottom: 30px;
+  }
+
+  /* Add this CSS to style the new list elements */
+  .tool ul {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 20px;
+    color: #00cc7a;
+  }
+
+  .tool li {
+    margin: 5px 0;
+  }
+
+  .tool h4 {
+    color: #00ff9d;
+    margin-top: 15px;
+    margin-bottom: 10px;
+  }
+
+  .credits {
+    position: fixed;
+    top: 10px;
+    left: 20px; /* Keep credits on left side */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 100;
+    background-color: #212121;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ff4d4d;
+    flex-wrap: wrap; /* Allow content to wrap */
+    max-width: 300px; /* Set a maximum width */
+    transition: left 0.3s ease; /* Update credits transition */
+  }
+
+  .credits.shifted {
+    left: 260px; /* Keep shifted position for credits */
+  }
+
+  .credits img {
+    width: 24px; /* Make image smaller */
+    height: 24px; /* Make image smaller */
+    border-radius: 50%; /* Keep the circular shape */
+    object-fit: cover; /* Maintain aspect ratio */
+  }
+
+  .credits .author-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 100%;
+  }
+
+  .credits .discord-info {
+    font-size: 0.9em;
+    color: #00ff9d;
+    margin-left: auto; /* Push to right */
+    padding-left: 10px;
+    border-left: 1px solid #ff4d4d;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Update the menu-toggle button styles */
+  .menu-toggle {
+    display: block; /* Make always visible instead of just on mobile */
+    position: fixed;
+    top: 20px;
+    right: 20px; /* Change from left: 20px to right: 20px */
+    left: auto; /* Remove left positioning */
+    z-index: 1000;
+    background: #212121;
+    border: 1px solid #ff4d4d;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .menu-toggle:hover {
+    background: #2a2a2a;
+  }
+
+  .menu-toggle svg {
+    width: 30px;
+    height: 30px;
+    fill: #00ff9d;
+    transition: transform 0.3s ease;
+  }
+
+  /* Add rotation animation for menu icon */
+  .menu-toggle.active svg {
+    transform: rotate(180deg);
+  }
+
+  /* Modify sidebar for mobile responsiveness */
+  @media screen and (max-width: 768px) {
+    .menu-toggle {
+      display: block;
+    }
+
+    .sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+
+    .main-content {
+      margin-left: 0;
+    }
+
+    .credits {
+      left: 20px;
+      top: 70px;
+    }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" id="menuToggle">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+  </svg>
+</button>
+
+<canvas class="matrix-bg" id="matrix"></canvas>
+
+<div class="credits">
+  <div class="author-info">
+    <img src="/a/ceca1a2a-7e87-4888-9c36-94a911ee181d" alt="TRXY">
+    <span>Created by TRXY</span>
+    <span class="discord-info">Discord: delta8s</span>
+  </div>
+</div>
+
+<div class="sidebar">
+  <div class="sidebar-nav">
+    <button onclick="showCategory('home')" class="active">Home</button>
+    <button onclick="showCategory('info-gathering')">Web Information Gathering</button>
+    <button onclick="showCategory('vuln-analysis')">Vulnerability Analysis</button>
+    <button onclick="showCategory('exploitation')">Exploitation</button>
+    <button onclick="showCategory('post-exploit')">Post Exploitation</button>
+    <button onclick="showCategory('wireless')">Wireless Testing</button>
+    <button onclick="showCategory('domain-crawling')">Domain Crawling</button>
+    <button onclick="showCategory('osint')">OSINT Tools</button>
+    <button onclick="showCategory('certifications')">Certifications</button>
+    <button onclick="showCategory('learning-platforms')">Training Platforms</button>
+    <button onclick="showCategory('hashing-encoding')">Hashing & Encoding</button>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="header">
+    <h1>TRXY's Bible of Ethical Hacking</h1>
+    <p>Your comprehensive guide to penetration testing tools and techniques</p>
+  </div>
+
+  <div class="container">
+    <div class="tool-category active" id="home">
+      <div class="home-content">
+        <h2>The Hacker Mindset: Be the One or the Zero</h2>
+        <div class="welcome-text">
+          <p>Welcome to the world of ethical hacking, where the mantra "Be the One or the Zero" embodies the essence of what it means to think like a penetration tester. This mindset isn't just about using tools - it's about developing a unique way of seeing the world that separates successful hackers from the rest.</p>
+          
+          <h3>The Hacker's Thought Process</h3>
+          <div style="text-align: left; max-width: 800px; margin: 20px auto;">
+            <p>1. <strong>Question Everything</strong><br>
+            Real pentesters don't accept systems at face value. They constantly ask: "What if?" What if I input this? What if I modify that? What happens at the boundaries? Every assumption is a potential vulnerability waiting to be discovered. The art of thinking like a hacker begins with questioning every aspect of a system's functionality, security measures, and underlying assumptions.</p>
+            
+            <p>2. <strong>Think Like Both Predator and Prey</strong><br>
+            To be successful, you must think both as an attacker and a defender. Understanding how systems are built and protected helps you identify where they might break. This dual perspective is crucial - be the one who finds the vulnerability, or be the zero who misses it. By understanding defensive mechanisms, you can better identify their weaknesses and potential bypass methods.</p>
+            
+            <p>3. <strong>Systematic Approach</strong><br>
+            Professional pentesters follow a methodical process:
+            <ul>
+              <li><strong>Reconnaissance:</strong> Gather every piece of information about the target - from public records to social media presence</li>
+              <li><strong>Enumeration:</strong> Map out all possible entry points, services, and potential attack surfaces</li>
+              <li><strong>Vulnerability Assessment:</strong> Identify weaknesses through careful analysis and testing</li>
+              <li><strong>Exploitation:</strong> Strategically leverage vulnerabilities while minimizing detection and damage</li>
+              <li><strong>Post-Exploitation:</strong> Maintain access, perform lateral movement, and document findings</li>
+              <li><strong>Reporting:</strong> Clearly communicate findings, risks, and remediation steps</li>
+            </ul></p>
+
+            <p>4. <strong>Creative Problem Solving</strong><br>
+            The best hackers are creative thinkers. They understand that there's rarely just one way to achieve a goal. When one path is blocked, they don't give up - they find another way. Being "the one" means seeing possibilities where others see dead ends. This creativity extends to:
+            <ul>
+              <li>Finding novel ways to chain multiple minor vulnerabilities into major exploits</li>
+              <li>Discovering new attack vectors that others haven't considered</li>
+              <li>Developing custom tools and scripts for specific scenarios</li>
+              <li>Thinking outside conventional security paradigms</li>
+            </ul></p>
+
+            <p>5. <strong>Continuous Learning</strong><br>
+            Technology evolves constantly, and so must you. Stay current with:
+            <ul>
+              <li><strong>New vulnerabilities and exploits:</strong> Follow security blogs, CVE databases, and exploit repositories</li>
+              <li><strong>Security tools and techniques:</strong> Master both mainstream and specialized security tools</li>
+              <li><strong>Programming languages and frameworks:</strong> Understand how applications are built to better break them</li>
+              <li><strong>Network protocols and architectures:</strong> Know the underlying systems you're testing</li>
+              <li><strong>Industry trends and emerging technologies:</strong> Stay ahead of new security challenges</li>
+            </ul></p>
+
+            <p>6. <strong>Ethical Foundation</strong><br>
+            Remember: With the power to break systems comes the responsibility to protect them. True pentesters:
+            <ul>
+              <li><strong>Always operate within legal boundaries:</strong> Obtain proper authorization and respect scope limitations</li>
+              <li><strong>Respect privacy and confidentiality:</strong> Handle sensitive data responsibly</li>
+              <li><strong>Focus on improving security:</strong> The goal is to enhance protection, not cause damage</li>
+              <li><strong>Document and report findings responsibly:</strong> Provide clear, actionable intelligence</li>
+              <li><strong>Maintain professional integrity:</strong> Build trust through ethical conduct</li>
+            </ul></p>
+
+            <p>7. <strong>The TRXY Philosophy: Be the One or the Zero</strong><br>
+            In the binary world of cybersecurity, you're either the one who succeeds or the zero who fails. This isn't about superiority - it's about commitment to excellence. Every test, every audit, every assessment is an opportunity to be the one who makes a difference in cybersecurity. This means:
+            <ul>
+              <li>Taking responsibility for your actions and their consequences</li>
+              <li>Pursuing excellence in everything you do</li>
+              <li>Contributing to the security community</li>
+              <li>Never settling for "good enough"</li>
+              <li>Continuously pushing your boundaries and capabilities</li>
+            </ul></p>
+          </div>
+
+          <p style="margin-top: 30px;">Remember: The tools in this guide are powerful, but they're only as effective as the mind wielding them. Develop your hacker mindset, and the tools will become extensions of your analytical thinking. Being "the one" means mastering both the technical skills and the cognitive approaches that define successful ethical hackers.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tool-category" id="info-gathering">
+      <h2>Web Information Gathering Tools</h2>
+      
+      <div class="tool">
+        <h3>NMAP (Network Mapper)</h3>
+        <p>Advanced port scanner and network reconnaissance tool essential for initial enumeration phases.</p>
+        
+        <h4>Basic Usage:</h4>
+        <ul>
+          <li><code>nmap [scan type] [options] {target}</code></li>
+        </ul>
+
+        <h4>Common Scan Types:</h4>
+        <ul>
+          <li><code>-sS</code> - TCP SYN scan (Default)</li>
+          <li><code>-sT</code> - TCP Connect scan</li>
+          <li><code>-sU</code> - UDP scan</li>
+          <li><code>-sV</code> - Version detection</li>
+          <li><code>-O</code> - OS detection</li>
+          <li><code>-A</code> - Aggressive scan (combines -sV -O -sC --traceroute)</li>
+        </ul>
+
+        <h4>Targeting Options:</h4>
+        <ul>
+          <li><code>192.168.1.1</code> - Single IP</li>
+          <li><code>192.168.1.1-254</code> - IP range</li>
+          <li><code>192.168.1.0/24</code> - CIDR notation</li>
+          <li><code>example.com</code> - Domain name</li>
+          <li><code>-iL targets.txt</code> - Input from file</li>
+        </ul>
+
+        <h4>Port Specification:</h4>
+        <ul>
+          <li><code>-p 80,443</code> - Specific ports</li>
+          <li><code>-p-</code> - All ports (1-65535)</li>
+          <li><code>-p 1-1000</code> - Port range</li>
+          <li><code>--top-ports 1000</code> - Most common ports</li>
+        </ul>
+
+        <h4>Output Options:</h4>
+        <ul>
+          <li><code>-oN scan.txt</code> - Normal output</li>
+          <li><code>-oX scan.xml</code> - XML output</li>
+          <li><code>-oG scan.gnmap</code> - Grepable output</li>
+          <li><code>-oA scan</code> - All formats</li>
+        </ul>
+
+        <h4>Timing and Performance:</h4>
+        <ul>
+          <li><code>-T0</code> - Paranoid: Very slow, one port at a time</li>
+          <li><code>-T1</code> - Sneaky: Slow, ideal for IDS evasion</li>
+          <li><code>-T2</code> - Polite: Slows down to consume less bandwidth</li>
+          <li><code>-T3</code> - Normal: Default timing template</li>
+          <li><code>-T4</code> - Aggressive: Assumes good network condition</li>
+          <li><code>-T5</code> - Insane: Very aggressive, may overwhelm targets</li>
+        </ul>
+
+        <h4>Advanced Options:</h4>
+        <ul>
+          <li><code>--script=vuln</code> - Run vulnerability detection scripts</li>
+          <li><code>--script=safe</code> - Run safe scripts only</li>
+          <li><code>--script=auth</code> - Run authentication scripts</li>
+          <li><code>--script=discovery</code> - Run host and service discovery scripts</li>
+        </ul>
+
+        <h4>Example Scanning Strategies:</h4>
+        <ul>
+          <li><strong>Initial Reconnaissance:</strong>
+            <code>nmap -sn 192.168.1.0/24</code></li>
+          <li><strong>Quick Scan:</strong>
+            <code>nmap -T4 -F 192.168.1.1</code></li>
+          <li><strong>Comprehensive Scan:</strong>
+            <code>nmap -sS -sV -O -p- -T4 -A 192.168.1.1</code></li>
+          <li><strong>Stealth Scan:</strong>
+            <code>nmap -sS -T2 --data-length 24 -f 192.168.1.1</code></li>
+          <li><strong>Web Server Scan:</strong>
+            <code>nmap -p 80,443 -sV --script=http-enum,http-headers,http-methods 192.168.1.1</code></li>
+        </ul>
+
+        <h4>Best Practices:</h4>
+        <ul>
+          <li>Always obtain proper authorization before scanning</li>
+          <li>Start with less intrusive scans and gradually increase intensity</li>
+          <li>Use appropriate timing templates based on network conditions</li>
+          <li>Save scan results for documentation and comparison</li>
+          <li>Verify findings manually to avoid false positives</li>
+        </ul>
+      </div>
+
+      <div class="tool">
+        <h3>Rustscan</h3>
+        <p>Lightning-fast port scanner written in Rust, designed to scan all ports in under a second and automatically pipe results into Nmap.</p>
+
+        <h4>Basic Usage:</h4>
+        <ul>
+          <li><code>rustscan -a [IP/HOST]</code> - Basic scan of all ports</li>
+          <li><code>rustscan -a [IP/HOST] -- -A -sC -sV</code> - Scan with Nmap integration</li>
+        </ul>
+
+        <h4>Configuration Options:</h4>
+        <ul>
+          <li><strong>Rate Limiting:</strong>
+            <ul>
+              <li><code>--batch-size [SIZE]</code> - Number of ports scanned per batch (default: 4500)</li>
+              <li><code>--timeout [TIME]</code> - Timeout in milliseconds (default: 1500)</li>
+              <li><code>--tries [NUMBER]</code> - Retry attempts for missed ports</li>
+            </ul>
+          </li>
+          <li><strong>Port Selection:</strong>
+            <ul>
+              <li><code>-p [PORTS]</code> - Specific ports (e.g., -p 80,443,8080)</li>
+              <li><code>-r [RANGE]</code> - Port range (e.g., -r 1-1000)</li>
+              <li><code>--top</code> - Scan top 1000 ports</li>
+            </ul>
+          </li>
+          <li><strong>Performance Tuning:</strong>
+            <ul>
+              <li><code>--ulimit [NUMBER]</code> - Adjust system file descriptor limits</li>
+              <li><code>--scan-order [ORDER]</code> - Port scan order (serial or random)</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>Advanced Usage Examples:</h4>
+        <ul>
+          <li><strong>Quick Scan with Custom Rate:</strong>
+            <code>rustscan -a 192.168.1.1 --batch-size 2500 --timeout 2000</code>
+          </li>
+          <li><strong>Comprehensive Scan with Nmap:</strong>
+            <code>rustscan -a 192.168.1.1 -b 2500 -t 2000 -- -A -sV -sC -O</code>
+          </li>
+          <li><strong>Multiple Target Scan:</strong>
+            <code>rustscan -a 192.168.1.1,192.168.1.2 -p 80,443,8080</code>
+          </li>
+          <li><strong>Scripts and Output:</strong>
+            <code>rustscan -a 192.168.1.1 -- -sV -sC --script vuln -oN output.txt</code>
+          </li>
+        </ul>
+
+        <h4>Custom Configuration File:</h4>
+        <p>Create a <code>config.toml</code> file in the following locations:</p>
+        <ul>
+          <li>Linux: <code>~/.rustscan/config.toml</code></li>
+          <li>Windows: <code>%USERPROFILE%/.rustscan/config.toml</code></li>
+        </ul>
+
+        <h4>Example config.toml:</h4>
+        <pre>
+          <code>
+    batch_size = 4500
+    timeout = 1500
+    tries = 1
+    quiet = false
+    ulimit = 5000
+    ports = "1-65535"
+    scan_order = "serial"
+    accessible = false
+          </code>
+        </pre>
+
+        <h4>Best Practices:</h4>
+        <ul>
+          <li><strong>Rate Limiting:</strong>
+            <ul>
+              <li>Start with lower batch sizes and increase gradually</li>
+              <li>Adjust timeout based on network latency</li>
+              <li>Use ulimit adjustment for large scans</li>
+            </ul>
+          </li>
+          <li><strong>Nmap Integration:</strong>
+            <ul>
+              <li>Use double dash (--) to separate Rustscan and Nmap arguments</li>
+              <li>Leverage Nmap's script engine for detailed analysis</li>
+              <li>Combine with version detection for comprehensive results</li>
+            </ul>
+          </li>
+          <li><strong>Performance Optimization:</strong>
+            <ul>
+              <li>Adjust batch size based on target network capacity</li>
+              <li>Use random scan order for IDS evasion</li>
+              <li>Implement appropriate timeouts for reliable results</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>Troubleshooting:</h4>
+        <ul>
+          <li><strong>Connection Refused:</strong>
+            <ul>
+              <li>Increase timeout value</li>
+              <li>Reduce batch size</li>
+              <li>Check firewall rules</li>
+            </ul>
+          </li>
+          <li><strong>Too Many Open Files:</strong>
+            <ul>
+              <li>Adjust ulimit setting</li>
+              <li>Reduce batch size</li>
+              <li>Use serial scan order</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div class="tool">
+        <h3>Aquatone</h3>
+        <p>Tool for visual inspection of websites across a large amount of hosts</p>
+
+        <h4>Key Features:</h4>
+        <ul>
+          <li>Domain Enumeration</li>
+          <li>HTTP Request Analysis</li>
+          <li>Screenshot Automation</li>
+          <li>Report Generation</li>
+        </ul>
+
+        <h4>Common Commands:</h4>
+        <ul>
+          <li><code>aquatone-discover -d example.com</code></li>
+          <li><code>aquatone-scan -d example.com</code></li>
+          <li><code>aquatone-gather -d example.com</code></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="tool-category" id="vuln-analysis">
+      <h2>Vulnerability Analysis</h2>
+      
+      <div class="tool">
+        <h3>Nessus</h3>
+        <p>Nessus is an industry-leading vulnerability scanner with comprehensive detection capabilities.</p>
+        
+        <h4>Core Features:</h4>
+        <ul>
+          <li>Vulnerability assessment</li>
+          <li>Configuration auditing</li>
+          <li>Malware detection</li>
+          <li>Compliance checking</li>
+        </ul>
+
+        <h4>Scan Types:</h4>
+        <ul>
+          <li>Basic Network Scan</li>
+          <li>Credentialed Scan</li>
+          <li>Web Application Scan</li>
+          <li>Custom Policy Scan</li>
+        </ul>
+
+        <h4>Best Practices:</h4>
+        <ul>
+          <li>Pre-scan Configuration:
+            <ul>
+              <li>Define scan boundaries</li>
+              <li>Configure credentials</li>
+              <li>Set scan policies</li>
+            </ul>
+          </li>
+          <li>During Scan:
+            <ul>
+              <li>Monitor scan progress</li>
+              <li>Adjust scan intensity if needed</li>
+              <li>Handle scan interruptions</li>
+            </ul>
+          </li>
+          <li>Post-scan Analysis:
+            <ul>
+              <li>Prioritize vulnerabilities</li>
+              <li>Validate findings</li>
+              <li>Generate reports</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="tool-category" id="exploitation">
+      <h2>Exploitation Tools</h2>
+      <div class="tool">
+        <h3>Metasploit Framework</h3>
+        <p>Advanced penetration testing and exploitation framework.</p>
+
+        <h4>Basic Commands:</h4>
+        <ul>
+          <li><code>msfconsole</code> - Start Metasploit console</li>
+          <li><code>search [keyword]</code> - Search for modules</li>
+          <li><code>use [module]</code> - Select a module</li>
+          <li><code>info</code> - Show module information</li>
+          <li><code>show options</code> - Display module options</li>
+          <li><code>set [option] [value]</code> - Set module option</li>
+          <li><code>exploit</code> or <code>run</code> - Execute module</li>
+        </ul>
+
+        <h4>Module Types:</h4>
+        <ul>
+          <li><strong>Exploits:</strong> Active exploitation modules</li>
+          <li><strong>Auxiliary:</strong> Scanning and verification modules</li>
+          <li><strong>Post:</strong> Post-exploitation modules</li>
+          <li><strong>Payloads:</strong> Code that runs on target system</li>
+          <li><strong>Encoders:</strong> Payload encoding tools</li>
+          <li><strong>Nops:</strong> No-operation generators</li>
+        </ul>
+
+        <h4>Common Workflows:</h4>
+        <ul>
+          <li><strong>Scanning:</strong>
+            <code>use auxiliary/scanner/[scanner_name]</code></li>
+          <li><strong>Exploitation:</strong>
+            <code>use exploit/[exploit_path]</code></li>
+          <li><strong>Multi-handler:</strong>
+            <code>use exploit/multi/handler</code></li>
+        </ul>
+
+        <h4>Payload Types:</h4>
+        <ul>
+          <li><strong>Singles:</strong> Self-contained payloads</li>
+          <li><strong>Stagers:</strong> Stage payload loaders</li>
+          <li><strong>Stages:</strong> Second-stage payloads</li>
+        </ul>
+
+        <h4>Database Operations:</h4>
+        <ul>
+          <li><code>db_status</code> - Check database status</li>
+          <li><code>workspace -a [name]</code> - Create workspace</li>
+          <li><code>hosts</code> - List discovered hosts</li>
+          <li><code>services</code> - List discovered services</li>
+          <li><code>vulns</code> - List discovered vulnerabilities</li>
+        </ul>
+
+        <h4>Session Management:</h4>
+        <ul>
+          <li><code>sessions -l</code> - List sessions</li>
+          <li><code>sessions -i [id]</code> - Interact with session</li>
+          <li><code>background</code> - Background current session</li>
+          <li><code>kill [id]</code> - Terminate session</li>
+        </ul>
+
+        <h4>Post-Exploitation:</h4>
+        <ul>
+          <li><code>hashdump</code> - Dump password hashes</li>
+          <li><code>getsystem</code> - Escalate privileges</li>
+          <li><code>load [plugin]</code> - Load plugin</li>
+          <li><code>run post/[module]</code> - Run post module</li>
+        </ul>
+      </div>
+      <div class="tool">
+        <h3>Burp Suite</h3>
+        <p>Advanced web application security testing platform that functions as an intercepting proxy, scanner, and testing toolkit.</p>
+
+        <h4>Core Features:</h4>
+        <ul>
+          <li><strong>Proxy:</strong> Intercept and modify HTTP/HTTPS traffic</li>
+          <li><strong>Scanner:</strong> Automated vulnerability detection</li>
+          <li><strong>Repeater:</strong> Manual request manipulation and testing</li>
+          <li><strong>Intruder:</strong> Automated attack tool</li>
+          <li><strong>Decoder:</strong> Data encoding/decoding</li>
+          <li><strong>Comparer:</strong> Data comparison tool</li>
+          <li><strong>Sequencer:</strong> Random value analyzer</li>
+        </ul>
+
+        <h4>Proxy Configuration:</h4>
+        <ul>
+          <li><strong>Listener Settings:</strong>
+            <ul>
+              <li>Bind to port: 8080 (default)</li>
+              <li>Interface: 127.0.0.1 (loopback)</li>
+              <li>Support invisible proxying</li>
+            </ul>
+          </li>
+          <li><strong>SSL Settings:</strong>
+            <ul>
+              <li>Install Burp CA certificate</li>
+              <li>Generate CA-signed per-host certificates</li>
+              <li>Enable SSL/TLS renegotiation</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>Scanner Features:</h4>
+        <ul>
+          <li><strong>Active Scanning:</strong>
+            <ul>
+              <li>Injection vulnerabilities</li>
+              <li>Cross-site scripting (XSS)</li>
+              <li>SQL injection</li>
+              <li>File path traversal</li>
+              <li>OS command injection</li>
+            </ul>
+          </li>
+          <li><strong>Passive Scanning:</strong>
+            <ul>
+              <li>Information disclosure</li>
+              <li>Cookie issues</li>
+              <li>Security headers</li>
+              <li>Content type issues</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>Intruder Attack Types:</h4>
+        <ul>
+          <li><strong>Sniper:</strong> Single insertion point, one wordlist</li>
+          <li><strong>Battering Ram:</strong> Multiple same values per request</li>
+          <li><strong>Pitchfork:</strong> Multiple insertion points, synchronized</li>
+          <li><strong>Cluster Bomb:</strong> Multiple insertion points, all combinations</li>
+        </ul>
+
+        <h4>Advanced Techniques:</h4>
+        <ul>
+          <li><strong>Session Handling:</strong>
+            <ul>
+              <li>Custom session handling rules</li>
+              <li>Macro recording</li>
+              <li>Cookie jar</li>
+              <li>Session tracking</li>
+            </ul>
+          </li>
+          <li><strong>Scope Control:</strong>
+            <ul>
+              <li>Target scope settings</li>
+              <li>Advanced scope control with regex</li>
+              <li>File type handling</li>
+            </ul>
+          </li>
+          <li><strong>Extensions:</strong>
+            <ul>
+              <li>BApp Store integration</li>
+              <li>Custom extension loading</li>
+              <li>API integration</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>Best Practices:</h4>
+        <ul>
+          <li><strong>Project Organization:</strong>
+            <ul>
+              <li>Use project files for persistence</li>
+              <li>Configure target scope</li>
+              <li>Set up appropriate filters</li>
+            </ul>
+          </li>
+          <li><strong>Testing Workflow:</strong>
+            <ul>
+              <li>Map application first</li>
+              <li>Use passive scanning during mapping</li>
+              <li>Configure active scanning carefully</li>
+              <li>Verify findings manually</li>
+            </ul>
+          </li>
+          <li><strong>Performance Optimization:</strong>
+            <ul>
+              <li>Use resource pools</li>
+              <li>Configure thread counts</li>
+              <li>Manage response timeout settings</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>Common Workflow Examples:</h4>
+        <ul>
+          <li><strong>Authentication Testing:</strong>
+            <ul>
+              <li>Capture login request in Proxy</li>
+              <li>Send to Intruder for bruteforce</li>
+              <li>Analyze responses in Comparer</li>
+              <li>Test session handling</li>
+            </ul>
+          </li>
+          <li><strong>Input Validation Testing:</strong>
+            <ul>
+              <li>Identify input points</li>
+              <li>Test with Repeater</li>
+              <li>Automate with Intruder</li>
+              <li>Verify with Scanner</li>
+            </ul>
+          </li>
+          <li><strong>API Testing:</strong>
+            <ul>
+              <li>Document API endpoints</li>
+              <li>Test parameter handling</li>
+              <li>Verify authentication</li>
+              <li>Check rate limiting</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="tool-category" id="post-exploit">
+      <h2>Post Exploitation</h2>
+      
+      <div class="tool">
+        <h3>Mimikatz</h3>
+        <p>Advanced Windows credential extraction and manipulation tool</p>
+        
+        <h4>Key Features:</h4>
+        <ul>
+          <li>Extract plaintext passwords, hashes, and tickets from memory</li>
+          <li>Pass-the-Hash and Pass-the-Ticket attacks</li>
+          <li>Kerberos ticket manipulation</li>
+          <li>DCSync attack simulation</li>
+        </ul>
+
+        <h4>Essential Commands:</h4>
+        <ul>
+          <li><code>privilege::debug</code> - Get debug privileges</li>
+          <li><code>sekurlsa::logonpasswords</code> - Extract logon passwords</li>
+          <li><code>sekurlsa::tickets</code> - Extract Kerberos tickets</li>
+          <li><code>kerberos::list</code> - List Kerberos tickets</li>
+          <li><code>lsadump::sam</code> - Dump SAM database</li>
+          <li><code>lsadump::lsa /patch</code> - Dump LSA secrets</li>
+          <li><code>lsadump::dcsync /domain:domain.com /user:krbtgt</code> - DCSync attack</li>
+        </ul>
+
+        <h4>Advanced Techniques:</h4>
+        <ul>
+          <li>Golden Ticket Creation:
+            <code>kerberos::golden /domain:domain.com /sid:S-1-5-21... /rc4:hash /user:admin /ptt</code>
+          </li>
+          <li>Silver Ticket Creation:
+            <code>kerberos::silver /target:server /service:service /rc4:hash /user:admin /ptt</code>
+          </li>
+        </ul>
+      </div>
+
+      <div class="tool">
+        <h3>Empire</h3>
+        <p>PowerShell and Python post-exploitation framework</p>
+        
+        <h4>Key Components:</h4>
+        <ul>
+          <li>Stagers - Initial payload delivery</li>
+          <li>Agents - Compromised endpoints</li>
+          <li>Modules - Post-exploitation tools</li>
+          <li>Listeners - C2 communication</li>
+        </ul>
+
+        <h4>Essential Commands:</h4>
+        <ul>
+          <li>Listener Management:
+            <ul>
+              <li><code>listeners</code> - List available listeners</li>
+              <li><code>uselistener http</code> - Set up HTTP listener</li>
+              <li><code>set Port 80</code> - Configure listener port</li>
+              <li><code>execute</code> - Start listener</li>
+            </ul>
+          </li>
+          <li>Agent Operations:
+            <ul>
+              <li><code>agents</code> - List active agents</li>
+              <li><code>interact C2AGENT</code> - Connect to agent</li>
+              <li><code>sysinfo</code> - Get system information</li>
+              <li><code>shell command</code> - Execute shell command</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>Advanced Modules:</h4>
+        <ul>
+          <li>Situational Awareness:
+            <ul>
+              <li><code>usemodule situational_awareness/network/portscan</code></li>
+              <li><code>usemodule situational_awareness/network/reverse_dns</code></li>
+            </ul>
+          </li>
+          <li>Credential Access:
+            <ul>
+              <li><code>usemodule credentials/mimikatz/logonpasswords</code></li>
+              <li><code>usemodule credentials/vault_credential</code></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div class="tool">
+        <h3>Covenant</h3>
+        <p>.NET-based post-exploitation framework</p>
+        
+        <h4>Key Features:</h4>
+        <ul>
+          <li>C2 Infrastructure management</li>
+          <li>Task automation</li>
+          <li>Data exfiltration</li>
+          <li>Lateral movement</li>
+        </ul>
+
+        <h4>Common Tasks:</h4>
+        <ul>
+          <li>Grunts (Agents) Management:
+            <ul>
+              <li><code>GetSystem</code> - Privilege escalation</li>
+              <li><code>MakeToken</code> - Create access token</li>
+              <li><code>RevToSelf</code> - Revert to original token</li>
+            </ul>
+          </li>
+          <li>Lateral Movement:
+            <ul>
+              <li><code>WMIExecute</code> - Execute via WMI</li>
+              <li><code>PSExec</code> - Execute via PSExec</li>
+              <li><code>DCSync</code> - Domain controller synchronization</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div class="tool">
+        <h3>PowerSploit</h3>
+        <p>Advanced PowerShell post-exploitation framework</p>
+        
+        <h4>Key Features:</h4>
+        <ul>
+          <li>Code Execution & Script Generation</li>
+          <li>Privilege Escalation Automation</li>
+          <li>Persistence Mechanisms</li>
+          <li>Anti-Virus Bypass</li>
+        </ul>
+
+        <h4>Common Commands:</h4>
+        <ul>
+          <li>Invoke-Shellcode</li>
+          <li>Get-GPPPassword</li>
+          <li>Invoke-Mimikatz</li>
+          <li>Get-TimedScreenshot</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="tool-category" id="wireless">
+      <h2>Wireless Testing</h2>
+      
+      <div class="tool">
+        <h3>Aircrack-ng Suite</h3>
+        <p>Comprehensive wireless network testing toolkit</p>
+
+        <h4>Core Components:</h4>
+        <ul>
+          <li><strong>airmon-ng</strong> - Interface management</li>
+          <li><strong>airodump-ng</strong> - Packet capture</li>
+          <li><strong>aireplay-ng</strong> - Packet injection</li>
+          <li><strong>aircrack-ng</strong> - Key cracking</li>
+        </ul>
+
+        <h4>Essential Commands:</h4>
+        <ul>
+          <li>Monitor Mode:
+            <code>airmon-ng start wlan0</code>
+          </li>
+          <li>Network Discovery:
+            <code>airodump-ng wlan0mon</code>
+          </li>
+          <li>Targeted Capture:
+            <code>airodump-ng -c [channel] --bssid [MAC] -w capture wlan0mon</code>
+          </li>
+          <li>Deauthentication Attack:
+            <code>aireplay-ng -0 0 -a [AP MAC] -c [Client MAC] wlan0mon</code>
+          </li>
+          <li>WPA/WPA2 Cracking:
+            <code>aircrack-ng -w wordlist.txt capture-01.cap</code>
+          </li>
+        </ul>
+
+        <h4>Advanced Techniques:</h4>
+        <ul>
+          <li>WEP Cracking:
+            <ul>
+              <li>Fake Authentication:
+                <code>aireplay-ng -1 0 -e [ESSID] -a [AP MAC] -h [Your MAC] wlan0mon</code>
+              </li>
+              <li>ARP Replay:
+                <code>aireplay-ng -3 -b [AP MAC] -h [Your MAC] wlan0mon</code>
+              </li>
+            </ul>
+          </li>
+          <li>Client Attack Vectors:
+            <ul>
+              <li>Evil Twin Attack</li>
+              <li>KARMA Attack</li>
+              <li>Client Probe Response</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div class="tool">
+        <h3>Wifite2</h3>
+        <p>Automated wireless attack tool</p>
+
+        <h4>Features:</h4>
+        <ul>
+          <li>Automated target selection</li>
+          <li>Multiple attack vectors</li>
+          <li>WPS vulnerability testing</li>
+          <li>PMKID attack support</li>
+        </ul>
+
+        <h4>Commands:</h4>
+        <ul>
+          <li>Basic Scan:
+            <code>wifite</code>
+          </li>
+          <li>Advanced Options:
+            <ul>
+              <li><code>wifite --kill</code> - Kill interfering processes</li>
+              <li><code>wifite --wpadt 300</code> - WPA capture time</li>
+              <li><code>wifite --wps</code> - WPS attacks only</li>
+              <li><code>wifite --pmkid</code> - PMKID attacks</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div class="tool">
+        <h3>Kismet</h3>
+        <p>Advanced wireless network detector and sniffer</p>
+
+        <h4>Capabilities:</h4>
+        <ul>
+          <li>Passive network detection</li>
+          <li>Packet capture and analysis</li>
+          <li>GPS mapping integration</li>
+          <li>Device fingerprinting</li>
+        </ul>
+
+        <h4>Configuration:</h4>
+        <ul>
+          <li>Source Definition:
+            <code>source=interface:wlan0:name=MainWifi</code>
+          </li>
+          <li>Remote Capture:
+            <code>kismet_server -p [port] -f [format]</code>
+          </li>
+        </ul>
+
+        <h4>Web Interface Features:</h4>
+        <ul>
+          <li>Real-time device tracking</li>
+          <li>Signal mapping</li>
+          <li>Client association tracking</li>
+          <li>Packet analysis</li>
+        </ul>
+      </div>
+
+      <div class="tool">
+        <h3>Bettercap</h3>
+        <p>Swiss army knife for WiFi, Bluetooth LE, and Ethernet networks</p>
+
+        <h4>Key Features:</h4>
+        <ul>
+          <li>Network Discovery</li>
+          <li>Traffic Manipulation</li>
+          <li>Credential Harvesting</li>
+          <li>Protocol Analysis</li>
+        </ul>
+
+        <h4>Common Commands:</h4>
+        <ul>
+          <li><code>wifi.recon on</code></li>
+          <li><code>wifi.show</code></li>
+          <li><code>wifi.deauth MAC</code></li>
+          <li><code>ble.recon on</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tool-category" id="domain-crawling">
+      <h2>Domain Crawling Tools</h2>
+      <div class="tool">
+        <h3>Sublist3r</h3>
+        <p>Fast subdomain enumeration tool for penetration testers. Enumerates subdomains using multiple search engines simultaneously.</p>
+        
+        <h4>Basic Usage:</h4>
+        <code>python sublist3r.py -d DOMAIN [options]</code>
+
+        <h4>Key Options:</h4>
+        <ul>
+          <li><code>-d, --domain</code> - Domain to enumerate subdomains of</li>
+          <li><code>-b, --bruteforce</code> - Enable the subbrute bruteforce module</li>
+          <li><code>-p, --ports</code> - Scan the found subdomains against specific tcp ports</li>
+          <li><code>-v, --verbose</code> - Enable verbose mode and display results in realtime</li>
+          <li><code>-t, --threads</code> - Number of threads to use for subbrute bruteforce</li>
+          <li><code>-e, --engines</code> - Specify a comma-separated list of search engines</li>
+          <li><code>-o, --output</code> - Save the results to text file</li>
+        </ul>
+
+        <h4>Example Commands:</h4>
+        <ul>
+          <li>Basic scan: <code>python sublist3r.py -d example.com</code></li>
+          <li>Verbose scan with specific engines: <code>python sublist3r.py -d example.com -e google,yahoo,bing -v</code></li>
+          <li>Full scan with bruteforce: <code>python sublist3r.py -d example.com -b -t 50 -o results.txt</code></li>
+        </ul>
+      </div>
+
+      <div class="tool">
+        <h3>Amass</h3>
+        <p>Advanced DNS enumeration and network mapping tool.</p>
+
+        <h4>Basic Syntax:</h4>
+        <code>amass [command] [options] -d DOMAIN</code>
+
+        <h4>Main Commands:</h4>
+        <ul>
+          <li><code>enum</code> - Perform enumeration</li>
+          <li><code>intel</code> - Collect intelligence</li>
+          <li><code>db</code> - Database operations</li>
+          <li><code>track</code> - Track changes to enumerations</code></li>
+          <li><code>viz</code> - Visualization operations</li>
+        </ul>
+
+        <h4>Common Options:</h4>
+        <ul>
+          <li><code>-active</code> - Perform active recon methods</li>
+          <li><code>-brute</code> - Perform brute force methods</li>
+          <li><code>-d</code> - Domain names separated by commas</li>
+          <li><code>-dir</code> - Output directory for files</li>
+          <li><code>-o</code> - Path to output file</li>
+          <li><code>-rf</code> - Path to file containing resolvers</li>
+          <li><code>-timeout</code> - Number of minutes to execute</li>
+        </ul>
+
+        <h4>Example Commands:</h4>
+        <ul>
+          <li>Basic enumeration: <code>amass enum -d example.com</code></li>
+          <li>Active enumeration with output: <code>amass enum -active -d example.com -o output.txt</code></li>
+          <li>Intensive scan: <code>amass enum -active -brute -d example.com -min-for-recursive 2</code></li>
+        </ul>
+      </div>
+
+      <div class="tool">
+        <h3>FFuF (Fuzz Faster U Fool)</h3>
+        <p>High-speed web fuzzer</p>
+
+        <h4>Key Features:</h4>
+        <ul>
+          <li>Directory Discovery</li>
+          <li>Virtual Host Discovery</li>
+          <li>Parameter Fuzzing</li>
+          <li>Authentication Testing</li>
+        </ul>
+
+        <h4>Common Commands:</h4>
+        <ul>
+          <li><code>ffuf -w wordlist.txt -u http://example.com/FUZZ</code></li>
+          <li><code>ffuf -w hosts.txt -H "Host: FUZZ.example.com" -u http://example.com</code></li>
+          <li><code>ffuf -w params.txt -u http://example.com/script.php?FUZZ=value</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tool-category" id="osint">
+      <h2>OSINT Tools for Web Applications</h2>
+      
+      <div class="tool">
+        <h3>crt.sh (Certificate Search)</h3>
+        <p>Web interface to search Certificate Transparency logs for domain certificates and subdomains.</p>
+
+        <h4>Usage Techniques:</h4>
+        <ul>
+          <li>Basic domain search: <code>%.example.com</code></li>
+          <li>Wildcard search: <code>%.%.example.com</code></li>
+          <li>Identity query: <code>identity LIKE '%example.com%'</code></li>
+          <li>Expired certificates: Add <code>expired=true</code> parameter</li>
+        </ul>
+
+        <h4>Advanced Queries:</h4>
+        <ul>
+          <li>Time-based search: <code>&lt;date> &lt;domain></code></li>
+          <li>Specific CA: <code>ca=Let's+Encrypt</code></li>
+          <li>JSON output: Append <code>.json</code> to URL</li>
+          <li>Group results: Add <code>&group=none</code> parameter</li>
+        </ul>
+
+        <h4>Search Strategies:</h4>
+        <ul>
+          <li>Historical Analysis: Use date ranges to track certificate changes over time</li>
+          <li>Pattern Recognition: Look for naming conventions in subdomains</li>
+          <li>Certificate Authority Analysis: Track which CAs are used by the organization</li>
+          <li>Domain Validation: Cross-reference with other sources for verification</li>
+        </ul>
+      </div>
+
+      <div class="tool">
+        <h3>Shodan</h3>
+        <p>Search engine for Internet-connected devices and web applications.</p>
+
+        <h4>Search Filters:</h4>
+        <ul>
+          <li><code>hostname:</code> - Search by hostname</li>
+          <li><code>port:</code> - Filter by port number</li>
+          <li><code>org:</code> - Search by organization</li>
+          <li><code>ssl:</code> - Search SSL/TLS certificates</li>
+          <li><code>http.title:</code> - Search by webpage title</li>
+          <li><code>http.status:</code> - Filter by HTTP status code</li>
+        </ul>
+
+        <h4>Advanced Operators:</h4>
+        <ul>
+          <li><code>before/after:</code> - Time-based filtering</li>
+          <li><code>vuln:</code> - Search by CVE</li>
+          <li><code>product:</code> - Filter by software/product</li>
+          <li><code>net:</code> - Search by IP range</li>
+          <li><code>os:</code> - Filter by operating system</li>
+        </ul>
+
+        <h4>Search Techniques:</h4>
+        <ul>
+          <li>Target Profiling:
+            <ul>
+              <li>Infrastructure mapping using organization filters</li>
+              <li>Service enumeration with port and product filters</li>
+              <li>Vulnerability assessment using CVE searches</li>
+              <li>Geographic distribution analysis</li>
+            </ul>
+          </li>
+          <li>Asset Discovery:
+            <ul>
+              <li>Identify exposed services and devices</li>
+              <li>Track technology stack changes</li>
+              <li>Monitor security posture</li>
+              <li>Detect misconfigurations</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div class="tool">
+        <h3>DNSdumpster</h3>
+        <p>DNS reconnaissance and research tool.</p>
+
+        <h4>Features:</h4>
+        <ul>
+          <li>DNS Records Discovery:
+            <ul>
+              <li>A, AAAA Records - IP address mapping</li>
+              <li>MX Records - Mail server identification</li>
+              <li>TXT Records - Domain verification and policies</li>
+              <li>SPF Records - Email security policies</li>
+              <li>DNS Servers - Nameserver infrastructure</li>
+            </ul>
+          </li>
+          <li>Host Map Generation:
+            <ul>
+              <li>Visual relationship mapping</li>
+              <li>Infrastructure layout analysis</li>
+              <li>Network topology visualization</li>
+              <li>Geographic distribution mapping</li>
+            </ul>
+          </li>
+          <li>Infrastructure Analysis:
+            <ul>
+              <li>Cloud service detection</li>
+              <li>CDN identification</li>
+              <li>Security provider recognition</li>
+              <li>Technology stack inference</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>Research Methodology:</h4>
+        <ul>
+          <li>Systematic enumeration of all DNS record types</li>
+          <li>Cross-referencing findings with other sources</li>
+          <li>Pattern analysis in naming conventions</li>
+          <li>Historical data comparison</li>
+          <li>Infrastructure evolution tracking</li>
+        </ul>
+      </div>
+
+      <div class="tool">
+        <h3>SpiderFoot</h3>
+        <p>Automated OSINT framework</p>
+
+        <h4>Key Features:</h4>
+        <ul>
+          <li>Over 200 modules for data collection</li>
+          <li>Automated correlation</li>
+          <li>Visual analysis</li>
+          <li>API integration</li>
+        </ul>
+
+        <h4>Common Commands:</h4>
+        <ul>
+          <li><code>sf.py -l 127.0.0.1:5001</code> - Start web interface</li>
+          <li><code>sf.py -m all -s example.com</code> - Run all modules</li>
+          <li><code>sf.py -m sfp_hunter,sfp_shodan -s example.com</code> - Run specific modules</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tool-category" id="certifications">
+      <h2>Recommended Certifications</h2>
+      
+      <div class="tool">
+        <h3>Understanding the Value of Cybersecurity Certifications</h3>
+        <div style="text-align: left; margin-bottom: 30px;">
+          <p style="font-size: 1.1em; line-height: 1.6;">
+            In the rapidly evolving landscape of cybersecurity, certifications serve as crucial milestones in your professional journey. They are not just pieces of paper - they represent validated expertise, structured learning paths, and industry recognition. Here's why these certifications are essential:
+          </p>
+          
+          <h4 style="margin-top: 20px;">Career Development and Recognition</h4>
+          <ul>
+            <li>Validate your skills to employers and clients</li>
+            <li>Command higher salaries and better positions</li>
+            <li>Demonstrate commitment to professional growth</li>
+            <li>Open doors to specialized roles and opportunities</li>
+          </ul>
+
+          <h4 style="margin-top: 20px;">Structured Learning Path</h4>
+          <ul>
+            <li>Systematic approach to mastering complex topics</li>
+            <li>Industry-validated curriculum and standards</li>
+            <li>Regular updates to keep pace with emerging threats</li>
+            <li>Practical hands-on experience through labs and exercises</li>
+          </ul>
+
+          <h4 style="margin-top: 20px;">Professional Network</h4>
+          <ul>
+            <li>Access to certification holder communities</li>
+            <li>Networking opportunities with industry experts</li>
+            <li>Knowledge sharing and collaboration platforms</li>
+            <li>Career advancement opportunities through professional connections</li>
+          </ul>
+
+          <h4 style="margin-top: 20px;">Legal and Compliance Benefits</h4>
+          <ul>
+            <li>Meet regulatory requirements for certain positions</li>
+            <li>Demonstrate due diligence in security practices</li>
+            <li>Support company compliance initiatives</li>
+            <li>Enhance credibility in legal and audit contexts</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tool">
+        <h3>CompTIA Security+</h3>
+        <p>Entry-level security certification covering essential security concepts. Perfect starting point for building a strong foundation in cybersecurity principles and practices.</p>
+        <a href="https://www.comptia.org/certifications/security" target="_blank">Learn More</a>
+      </div>
+
+      <div class="tool">
+        <h3>Certified Ethical Hacker (CEH)</h3>
+        <p>Industry-standard certification for ethical hacking and penetration testing. Demonstrates proficiency in identifying and exploiting security vulnerabilities using professional methodologies.</p>
+        <a href="https://www.eccouncil.org/programs/certified-ethical-hacker-ceh/" target="_blank">Learn More</a>
+      </div>
+
+      <div class="tool">
+        <h3>OSCP (Offensive Security Certified Professional)</h3>
+        <p>Highly respected hands-on penetration testing certification. Known for its rigorous practical exam and comprehensive coverage of real-world penetration testing scenarios.</p>
+        <a href="https://www.offensive-security.com/pwk-oscp/" target="_blank">Learn More</a>
+      </div>
+
+      <div class="tool">
+        <h3>SANS GPEN (GIAC Penetration Tester)</h3>
+        <p>Advanced penetration testing certification covering latest techniques. Focuses on detailed technical aspects of penetration testing and vulnerability assessment.</p>
+        <a href="https://www.giac.org/certification/penetration-tester-gpen" target="_blank">Learn More</a>
+      </div>
+
+      <div class="tool">
+        <h3>eWPT (eLearnSecurity Web Penetration Tester)</h3>
+        <p>Focused web application penetration testing certification. Specialized in modern web application security testing methodologies and techniques.</p>
+        <a href="https://elearnsecurity.com/product/ewpt-certification/" target="_blank">Learn More</a>
+      </div>
+
+      <div class="tool">
+        <h3>CISSP (Certified Information Systems Security Professional)</h3>
+        <p>Advanced certification for information security professionals. Globally recognized standard of achievement that confirms knowledge in security and risk management.</p>
+        <a href="https://www.isc2.org/Certifications/CISSP" target="_blank">Learn More</a>
+      </div>
+    </div>
+
+    <div class="tool-category" id="learning-platforms">
+      <h2>Cybersecurity Training Platforms</h2>
+      
+      <div class="tool">
+        <h3>Understanding the Value of Hands-on Learning</h3>
+        <div style="text-align: left; margin-bottom: 30px;">
+          <p style="font-size: 1.1em; line-height: 1.6;">
+            Practical experience is invaluable in cybersecurity. These platforms provide safe, legal environments to develop and test your skills through real-world scenarios and structured learning paths. Regular practice on these platforms helps build muscle memory, problem-solving abilities, and keeps your skills sharp in an ever-evolving field.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool">
+        <h3>TryHackMe</h3>
+        <p>Browser-based cybersecurity training platform featuring gamified learning paths and realistic scenarios.</p>
+        
+        <h4>Key Benefits:</h4>
+        <ul>
+          <li>Structured learning paths for all skill levels</li>
+          <li>Browser-based access - no setup required</li>
+          <li>Real-world scenarios in isolated environments</li>
+          <li>Active community and support forums</li>
+          <li>Competitive elements and rankings</li>
+        </ul>
+
+        <h4>Learning Paths:</h4>
+        <ul>
+          <li>Pre-Security Fundamentals</li>
+          <li>Complete Beginner</li>
+          <li>Web Fundamentals</li>
+          <li>Offensive Pentesting</li>
+          <li>Defensive Security</li>
+        </ul>
+        <a href="https://tryhackme.com" target="_blank">Start Learning</a>
+      </div>
+
+      <div class="tool">
+        <h3>Hack The Box</h3>
+        <p>Advanced penetration testing platform providing retired and active machines for testing and learning.</p>
+        
+        <h4>Platform Features:</h4>
+        <ul>
+          <li>Active and retired vulnerable machines</li>
+          <li>Challenging CTF-style exercises</li>
+          <li>Real-world enterprise scenarios</li>
+          <li>Professional certification paths</li>
+          <li>Labs focusing on specific technologies</li>
+        </ul>
+
+        <h4>Learning Resources:</h4>
+        <ul>
+          <li>Academy structured courses</li>
+          <li>Pro Labs for enterprise training</li>
+          <li>Seasonal events and challenges</li>
+          <li>Business-specific scenarios</li>
+        </ul>
+        <a href="https://www.hackthebox.com" target="_blank">Start Hacking</a>
+      </div>
+
+      <div class="tool">
+        <h3>PortSwigger Web Security Academy</h3>
+        <p>Comprehensive web security training platform from the creators of Burp Suite.</p>
+        
+        <h4>Learning Materials:</h4>
+        <ul>
+          <li>Detailed coverage of web vulnerabilities</li>
+          <li>Interactive labs and exercises</li>
+          <li>Real-world attack scenarios</li>
+          <li>Expert-led methodology tutorials</li>
+        </ul>
+
+        <h4>Key Topics:</h4>
+        <ul>
+          <li>SQL Injection</li>
+          <li>Cross-site Scripting (XSS)</li>
+          <li>Authentication Vulnerabilities</li>
+          <li>Advanced Exploitation Techniques</li>
+          <li>API Security Testing</li>
+        </ul>
+        <a href="https://portswigger.net/web-security" target="_blank">Learn Web Security</a>
+      </div>
+
+      <div class="tool">
+        <h3>VulnHub</h3>
+        <p>Collection of vulnerable virtual machines for practical cybersecurity training.</p>
+        
+        <h4>Platform Benefits:</h4>
+        <ul>
+          <li>Downloadable VM-based challenges</li>
+          <li>Varying difficulty levels</li>
+          <li>Community-contributed machines</li>
+          <li>Local testing environment</li>
+        </ul>
+
+        <h4>Challenge Types:</h4>
+        <ul>
+          <li>Boot2Root scenarios</li>
+          <li>CTF-style challenges</li>
+          <li>Real-world simulations</li>
+          <li>Specific vulnerability focus</li>
+        </ul>
+        <a href="https://www.vulnhub.com" target="_blank">Download VMs</a>
+      </div>
+
+      <div class="tool">
+        <h3>PicoCTF</h3>
+        <p>Free computer security education platform designed for beginners.</p>
+        
+        <h4>Educational Focus:</h4>
+        <ul>
+          <li>Foundational security concepts</li>
+          <li>Progressive difficulty curve</li>
+          <li>Year-round practice problems</li>
+          <li>Annual competitions</li>
+        </ul>
+
+        <h4>Challenge Categories:</h4>
+        <ul>
+          <li>Binary Exploitation</li>
+          <li>Web Exploitation</li>
+          <li>Cryptography</li>
+          <li>Forensics</li>
+          <li>Reverse Engineering</li>
+        </ul>
+        <a href="https://picoctf.org" target="_blank">Start Learning</a>
+      </div>
+
+      <div class="tool">
+        <h3>OWASP Juice Shop</h3>
+        <p>Modern web application security training platform focusing on OWASP Top 10.</p>
+        
+        <h4>Learning Environment:</h4>
+        <ul>
+          <li>Realistic e-commerce application</li>
+          <li>Multiple difficulty levels</li>
+          <li>Score tracking system</li>
+          <li>CTF support</li>
+        </ul>
+
+        <h4>Security Challenges:</h4>
+        <ul>
+          <li>Authentication flaws</li>
+          <li>Authorization bypasses</li>
+          <li>Injection vulnerabilities</li>
+          <li>Security misconfiguration</li>
+          <li>API vulnerabilities</li>
+        </ul>
+        <a href="https://owasp.org/www-project-juice-shop/" target="_blank">Try Juice Shop</a>
+      </div>
+    </div>
+
+    <div class="tool-category" id="hashing-encoding">
+      <h2>Hashing and Encoding Guide</h2>
+      
+      <div class="tool">
+        <h3>Understanding Hashing vs Encoding</h3>
+        <div style="text-align: left; margin-bottom: 30px;">
+          <p>
+            <strong>Hashing:</strong> One-way cryptographic function that generates a fixed-size output from input data. Cannot be reversed.
+          </p>
+          <p>
+            <strong>Encoding:</strong> Reversible data transformation that changes data format while preserving content. Can be decoded.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool">
+        <h3>Common Hash Types</h3>
+        
+        <h4>MD5 (Message Digest 5)</h4>
+        <ul>
+          <li>128-bit hash value</li>
+          <li>Now considered cryptographically broken</li>
+          <li>Example: "hello" → 5d41402abc4b2a76b9719d911017c592</li>
+          <li>Command: <code>echo -n "hello" | md5sum</code></li>
+        </ul>
+
+        <h4>SHA-1 (Secure Hash Algorithm 1)</h4>
+        <ul>
+          <li>160-bit hash value</li>
+          <li>Deprecated for security use</li>
+          <li>Example: "hello" → aaf4c61ddcc5e8a2dabede0f3b482cd9aea9434d</li>
+          <li>Command: <code>echo -n "hello" | sha1sum</code></li>
+        </ul>
+
+        <h4>SHA-256</h4>
+        <ul>
+          <li>256-bit hash value</li>
+          <li>Currently considered cryptographically secure</li>
+          <li>Example: "hello" → 2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824</li>
+          <li>Command: <code>echo -n "hello" | sha256sum</code></li>
+        </ul>
+
+        <h4>SHA-512</h4>
+        <ul>
+          <li>512-bit hash value</li>
+          <li>Highest security in SHA-2 family</li>
+          <li>Example: "hello" → 9b71d224bd62f3785d96d46ad3ea3d73319bfbc2890caadae2dff72519673ca72323c3d99ba5c11d7c7acc6e14b8c5da0c4663475c2e5c3adef46f73bcdec043</li>
+          <li>Command: <code>echo -n "hello" | sha512sum</code></li>
+        </ul>
+
+        <h4>bcrypt</h4>
+        <ul>
+          <li>Adaptive hash function designed for password hashing</li>
+          <li>Includes salt automatically</li>
+          <li>Configurable work factor</li>
+          <li>Example: "hello" → $2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LcdYaM.lvOHHHYHce</li>
+        </ul>
+      </div>
+
+      <div class="tool">
+        <h3>Common Encoding Types</h3>
+        
+        <h4>Base64</h4>
+        <ul>
+          <li>Binary-to-text encoding</li>
+          <li>Uses 64 characters (A-Z, a-z, 0-9, +, /)</li>
+          <li>Example: "hello" → aGVsbG8=</li>
+          <li>Encode: <code>echo -n "hello" | base64</code></li>
+          <li>Decode: <code>echo -n "aGVsbG8=" | base64 -d</code></li>
+        </ul>
+
+        <h4>Hex (Base16)</h4>
+        <ul>
+          <li>Binary-to-text using hexadecimal (0-9, A-F)</li>
+          <li>Example: "hello" → 68656C6C6F</li>
+          <li>Encode: <code>echo -n "hello" | xxd -p</code></li>
+          <li>Decode: <code>echo "68656C6C6F" | xxd -p -r</code></li>
+        </ul>
+
+        <h4>URL Encoding</h4>
+        <ul>
+          <li>Encodes special characters for URLs</li>
+          <li>Uses percent encoding (%xx)</li>
+          <li>Example: "hello world" → hello%20world</li>
+          <li>Common encodings:
+            <ul>
+              <li>Space → %20</li>
+              <li>! → %21</li>
+              <li>@ → %40</li>
+              <li>$ → %24</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div class="tool">
+        <h3>Hash Cracking Tools</h3>
+        
+        <h4>Hashcat</h4>
+        <ul>
+          <li>Advanced password recovery tool</li>
+          <li>Example commands:
+            <ul>
+              <li>MD5: <code>hashcat -m 0 hash.txt wordlist.txt</code></li>
+              <li>SHA1: <code>hashcat -m 100 hash.txt wordlist.txt</code></li>
+              <li>bcrypt: <code>hashcat -m 3200 hash.txt wordlist.txt</code></li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>John the Ripper</h4>
+        <ul>
+          <li>Popular password cracker</li>
+          <li>Example commands:
+            <ul>
+              <li>Basic: <code>john hash.txt</code></li>
+              <li>With wordlist: <code>john --wordlist=wordlist.txt hash.txt</code></li>
+              <li>Show cracked: <code>john --show hash.txt</code></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+
+      <div class="tool">
+        <h3>Best Practices</h3>
+        <ul>
+          <li>Never use MD5 or SHA-1 for password storage</li>
+          <li>Use bcrypt, Argon2, or PBKDF2 for passwords</li>
+          <li>Always use unique salts with password hashes</li>
+          <li>Use SHA-256 or SHA-512 for file integrity</li>
+          <li>Keep hash functions updated as standards evolve</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Matrix rain effect
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const letters = '01';
+const fontSize = 10;
+const columns = canvas.width / fontSize;
+const drops = [];
+
+for (let i = 0; i < columns; i++) {
+  drops[i] = 1;
+}
+
+function draw() {
+  ctx.fillStyle = 'rgba(26, 26, 26, 0.05)'; // Adjusted background fade
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  ctx.fillStyle = '#00ff9d'; // Change matrix rain to soft green
+  ctx.font = fontSize + 'px monospace';
+  
+  for (let i = 0; i < drops.length; i++) {
+    const text = letters.charAt(Math.floor(Math.random() * letters.length));
+    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+    
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+      drops[i] = 0;
+    }
+    drops[i]++;
+  }
+}
+
+setInterval(draw, 33);
+
+// Resize handler
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+// Category switcher
+function showCategory(categoryId) {
+  document.querySelectorAll('.tool-category').forEach(category => {
+    category.classList.remove('active');
+  });
+  
+  document.getElementById(categoryId).classList.add('active');
+  
+  document.querySelectorAll('.sidebar-nav button').forEach(button => {
+    button.classList.remove('active');
+  });
+  document.querySelector(`button[onclick="showCategory('${categoryId}')"]`).classList.add('active');
+}
+
+// Menu toggle for mobile
+document.getElementById('menuToggle').addEventListener('click', () => {
+  const sidebar = document.querySelector('.sidebar');
+  const mainContent = document.querySelector('.main-content');
+  const credits = document.querySelector('.credits');
+  const menuToggle = document.getElementById('menuToggle');
+  
+  sidebar.classList.toggle('active');
+  mainContent.classList.toggle('shifted');
+  credits.classList.toggle('shifted');
+  menuToggle.classList.toggle('active');
+  
+  // Update menu icon
+  const menuIcon = document.querySelector('#menuToggle svg');
+  if (sidebar.classList.contains('active')) {
+    menuIcon.innerHTML = '<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>'; // X icon
+  } else {
+    menuIcon.innerHTML = '<path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>'; // Hamburger icon
+  }
+});
+
+// Close sidebar when clicking outside
+document.addEventListener('click', (e) => {
+  const sidebar = document.querySelector('.sidebar');
+  const menuToggle = document.getElementById('menuToggle');
+
+  if (!sidebar.contains(e.target) && !menuToggle.contains(e.target) && sidebar.classList.contains('active')) {
+    menuToggle.click();
+  }
+});
+</script>
+</body>
+</html>
